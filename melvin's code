@@ -1,0 +1,92 @@
+
+import pygame
+import sys, os, math
+from pygame import *
+from random import randint
+from spriteHelper import SpriteSheet
+
+WINDOWWIDTH = 1024
+WINDOWHEIGHT = 768
+GAMENAME = "Awesome Game"
+FRAMERATE = 60
+BGCOLOR = (255,255,255)
+class Player:
+    '''The class use to identify the single player'''
+    ##########VARA########
+
+    x = 0
+    y = 0
+    
+    collider = None
+    
+    #########construct#######
+    def __init__(self):
+        self.image = SpriteSheet("p2_jump.png")
+        self.image = self.image.get_image(0,0,66,94)
+    
+    def draw(self,surface):
+        '''draws the spite for the player on the screen'''
+        surface.blit(self.image,(self.x,self.y))
+    
+    def getCollider(self):
+        '''return a rectangle area representing the player spite'''
+        pass
+    def getCenter(self):
+        rect = self.image.get_rect()
+        print(rect.w/2,rect.h/2)
+        return (rect.w/2,rect.h/2)
+    
+class Game:
+    ##########VARIABLES##########
+    score = 0
+    levels = []
+    player = None
+    
+    ##########CONSTRUCTOR##########
+    def __init__(self):
+        pygame.init()
+        self.clock = pygame.time.Clock()
+        self.surface = pygame.display.set_mode((WINDOWWIDTH,WINDOWHEIGHT))
+        pygame.display.set_caption(GAMENAME)
+        self.player = Player()
+    
+    #########MAIN FUNCTION##########
+    def main(self):
+        playing = True
+        
+        
+        ##########GAME LOOP##########
+        while playing:
+            delta = self.clock.tick(FRAMERATE)
+            for event in pygame.event.get():
+                if event.type==QUIT:
+                    self.quit()
+            self.processLogic()
+            self.drawScreen()
+            pygame.display.flip()
+            
+    def processLogic(self):
+        pass
+    
+    def drawScreen(self):
+        self.surface.fill(BGCOLOR)
+        centerOfScreen = self.getCenterOfScreen()
+        centerOfPlayer = self.player.getCenter()
+        self.player.x = centerOfScreen[0]-centerOfPlayer[0]
+        self.player.x = centerOfScreen[1]-centerOfPlayer[1]
+        self.player.draw(self.surface)
+        
+    
+    def quit(self):
+        pygame.quit
+        sys.exit ()
+        
+    def getCenterOfScreen(self):
+        return (WINDOWWIDTH/2,WINDOWHEIGHT/2)
+        
+        
+        
+        
+if __name__=='__main__':
+    game = Game()
+    game.main()
