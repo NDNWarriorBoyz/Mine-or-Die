@@ -1,0 +1,60 @@
+'''
+    #####CONSTRUCTOR######
+    def __init__(selfself):
+@author: Storm, Eagle, Jacob, Greg, Melvin
+Description: 
+'''
+import pygame
+import sys, os, math
+from pygame import *
+from random import randint
+
+WINDOWWIDTH = 1000
+WINDOWHEIGHT = 1200
+GAMENAME = "Mine or Die"
+FRAMERATE = 60
+BGCOLOR = (255,255,255)
+
+class Game:
+    ##########VARIABLES##########is:open is:pr author:PsychoOrpheus archived:false 
+    score = 0
+    levels = []
+    
+    
+    ##########CONSTRUCTOR##########
+    def __init__(self):
+        pass
+    
+    #########MAIN FUNCTION##########
+    def main(self):
+        playing = True
+        pygame.init()
+        clock = pygame.time.Clock()
+        self.surface = pygame.display.set_mode((WINDOWWIDTH,WINDOWHEIGHT))
+        pygame.display.set_caption(GAMENAME)
+        
+        ##########GAME LOOP##########
+        while playing:
+            delta = clock.tick(FRAMERATE)
+            for event in pygame.event.get():
+                if event.type==QUIT:
+                    self.quit()
+            self.processLogic(delta)
+            self.drawScreen()
+            pygame.display.flip()
+                    
+    def quit(self):
+        pygame.quit()
+        sys.exit()
+    
+    def processLogic(self,delta):
+        pass
+        
+    def drawScreen(self):
+        self.surface.fill(BGCOLOR)
+        
+        
+        
+if __name__=='__main__':
+    game = Game()
+    game.main()
