@@ -1,0 +1,260 @@
+
+'''
+Created on Dec 5, 2017
+
+@author: student
+'''
+'''
+
+Description: A simple style platformer game that focuses on the main character
+
+ (you) that is an orc stealing from the goblins. You find yourself on an
+
+  adventure trying to escape from the goblins and fighting your way through 
+
+  the obstacles and monsters such as bats, spiders, skeletons,etc.
+
+  
+
+  @author: Storm,Eagle,Jacob,Greg,Melvin
+
+'''
+
+import pygame
+
+import sys, os, math
+
+from pygame import *
+
+from random import randint
+
+from spriteHelper import SpriteSheet
+
+from numpy.core.defchararray import center
+
+
+
+WINDOWWIDTH = 1024
+
+WINDOWHEIGHT = 768
+
+GAMENAME = "Mine or Die"
+
+FRAMERATE = 60
+
+BGCOLOR = (255,255,255)
+
+class Platform:
+    '''the class used to identify individual platform'''
+        ######VARIABLES#####
+    x = 0
+    y = 0
+    image = None
+    collider = None 
+        
+        ##########CONSTUCTOR######
+    def __init__(self,x,y,image):
+        self.x = x
+        self.y = y
+        self.image = image
+        self.collider = self.image.get_rect()
+        self.collider.x = self.x
+        self.collider.y = self.y
+            
+    def draw(self,surface):
+
+        '''Draws the sprite for the player on the screen'''
+
+        surface.blit(self.image,(self.x,self.y))
+
+        
+class Player:
+
+    '''The class used to identify the single player'''
+
+    #######VARIABLES######
+
+    x = 0
+
+    y = 0
+
+    vX = 0
+
+    vY = 0
+
+    collider = None
+
+    isFalling = True
+
+    #######CONSTRUCTOR#######
+
+    def __init__(self):
+
+        self.image = SpriteSheet("jumpingtree.png")
+
+        self.image = self.image.get_image(0,0,200,200           )
+
+    
+
+    def draw(self,surface):
+
+        '''Draws the sprite for the player on the screen'''
+
+        surface.blit(self.image,(self.x,self.y))
+
+    
+
+    def getCollider(self):
+
+        '''returns a rectangle area representing the player sprite'''
+
+        self.collider = self.image.get_rect()
+        self.collider.x = self.x
+        self.collider.y = self.y
+        return self.collider
+
+    def getCenter(self):
+
+        rect = self.image.get_rect()
+
+        print(rect.x,rect.y)
+
+        return (rect.x/2,rect.y/2) 
+        get_image(0,0,70,70)
+        image = None
+        collider = None
+
+    def process(self,delta):
+        if self.isFalling:
+
+            self.x += self.vX*delta
+
+            self.vY += .002*delta
+
+            self.y += self.vY*delta
+
+        
+
+class Game:
+
+    ##########VARIABLES##########
+
+    score = 0
+
+    levels = []
+
+    player = None
+
+    platform = []
+
+    
+
+    ##########CONSTRUCTOR##########
+
+    def __init__(self):
+   
+        pygame.init()
+
+        self.clock = pygame.time.Clock()
+
+        self.surface = pygame.display.set_mode((WINDOWWIDTH,WINDOWHEIGHT))
+
+        pygame.display.set_caption(GAMENAME)
+
+        self.player = Player()
+        
+    #########MAIN FUNCTION##########
+
+    def main(self):
+
+        playing = True
+
+        centerOfScreen = self.getCenterOfScreen()
+
+        centerOfPlayer = self.player.getCenter()
+
+        self.player.x = centerOfScreen[0]-centerOfPlayer[0]
+
+        self.player.y = centerOfScreen[1]-centerOfPlayer[1] 
+        grassLeftImage = SpriteSheet("grassLeft.png").get_image(0,0,70,70)
+        grassMidImage = SpriteSheet("grassMid.png").get_image(0,0,70,70)
+        grassRightImage = SpriteSheet("grassRight.png").get_image(0,0,70,70)
+        platform1X = self.player.x
+        platform1Y = self.player.y+self.player.image.get_rect().height
+        platform1 = Platform(platform1X,platform1Y,grassMidImage)
+        self.platform.append(platform1)
+        ##########GAME LOOP##########
+
+        while playing:
+
+            delta = self.clock.tick(FRAMERATE)
+
+            for event in pygame.event.get():
+
+                if event.type==QUIT:
+
+                    self.quit()
+
+                if event.type == KEYDOWN:
+
+                    if event.key == K_SPACE:
+
+                        #JUMP
+
+                        self.player.vY=-1
+
+            self.processLogic(delta)
+
+            self.drawScreen()
+
+            pygame.display.flip()      
+
+ 
+
+    def quit(self):
+
+        pygame.quit()
+
+        sys.exit()
+
+    
+
+    def processLogic(self,delta):
+
+        self.player.process(delta)
+
+        for platform in self.platform:
+            c = platform.collider
+            if self.player.getCollider().colliderect(c):
+                self.player.vY=0
+                self.player.isFalling = False
+            else:
+                self.player.isFalling = True
+                
+
+    def drawScreen(self):
+
+        self.surface.fill(BGCOLOR)
+        for platform in self.platform:
+            platform.draw(self.surface)
+            
+        
+
+        self.player.draw(self.surface)
+
+        
+
+    def getCenterOfScreen(self):
+
+        return (WINDOWWIDTH/2,WINDOWHEIGHT/2)
+
+    
+
+            
+
+if __name__=='__main__':
+
+    game = Game()
+
+    game.main()
+
